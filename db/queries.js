@@ -14,82 +14,39 @@ const getLastInsertedId = async (tableName) => {
   });
 };
 
-const createNewQuiz = async (accessCode) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const query = await db.prepare(
-        `INSERT INTO quizzes (accessCode) VALUES (?)`,
-      );
-      await query.run(accessCode);
-      resolve(await getLastInsertedId("quizzes"));
-    } catch (err) {
-      console.error("ERROR ON INSERTING A NEW QUIZ\n", err);
-      reject(err);
-    }
-  });
+const createNewQuiz = async (title, accessCode) => {
+  try {
+    const query = await db.prepare(
+      `INSERT INTO quizzes (title, accessCode) VALUES (?, ?)`,
+    );
+    await query.run(title, accessCode);
+    return await getLastInsertedId("quizzes");
+  } catch (err) {
+    console.error("ERROR ON INSERTING A NEW QUIZ\n", err);
+  }
 };
 
 const createNewQuestion = async (title, description, quizId) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const query = await db.prepare(
-        `INSERT INTO questions (title, quizID, questionText) VALUES (?, ?, ?)`,
-      );
-      await query.run(title, quizId, description);
-      resolve(await getLastInsertedId("questions"));
-    } catch (err) {
-      console.error("ERROR ON INSERTING A QUESTION\n", err);
-      reject(err);
-    }
-  });
+  try {
+    const query = await db.prepare(
+      `INSERT INTO questions (title, quizID, questionText) VALUES (?, ?, ?)`,
+    );
+    await query.run(title, quizId, description);
+    return await getLastInsertedId("questions");
+  } catch (err) {
+    console.error("ERROR ON INSERTING A QUESTION\n", err);
+  }
 };
 
-const createNewOption = async (min, max, questionId, isCorrect) => {
-  return new Promise(async (resolve, reject) => {
+const createNewOption = async (min, max, answer, questionId, isCorrect) => {
+  return new Promise((resolve, reject) => {
     try {
-      const query = await db.prepare(
-        "INSERT INTO options (questionId, min, max, isCorrect) VALUES (?, ?, ?, ?)",
+      const query = db.prepare(
+        "INSERT INTO options (questionId, min, max, answer, isCorrect) VALUES (?, ?, ?, ?, ?)",
       );
-      resolve(await query.run(questionId, min, max, isCorrect));
+      resolve(query.run(questionId, min, max, answer, isCorrect));
     } catch (err) {
       console.error("ERROR ON INSERTING A NEW OPTION\n", err);
-      reject(err);
-    }
-  });
-};
-
-const getQuizBy = async () => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const query = await db.prepare(
-        "SELECT FROM questions (questionId, min, max) VALUES (?, ?, ?)",
-      );
-      resolve(await query.run(questionId, min, max, isCorrect));
-    } catch (err) {
-      console.error("ERROR ON INSERTING A NEW OPTION\n", err);
-      reject(err);
-    }
-  });
-};
-
-const getQuizIdByCode = async (accessCode) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      // Prepare the SQL query with placeholder for accessCode
-      const query = "SELECT id FROM quizzes WHERE accessCode = ?";
-
-      // Execute the query with parameter binding
-      db.get(query, [accessCode], (err, row) => {
-        if (err) {
-          console.error("ERROR ON GETTING QUIZ ID BY ACCESS CODE\n", err);
-          reject(err);
-        } else {
-          // Resolve with the row containing the quiz id, or undefined if not found
-          resolve(row ? row.id : undefined);
-        }
-      });
-    } catch (err) {
-      console.error("ERROR ON GETTING QUIZ ID BY ACCESS CODE\n", err);
       reject(err);
     }
   });
@@ -99,5 +56,4 @@ module.exports = {
   createNewQuiz,
   createNewQuestion,
   createNewOption,
-  getQuizIdByCode,
 };

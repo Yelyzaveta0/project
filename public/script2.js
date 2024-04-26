@@ -21,24 +21,10 @@ document.addEventListener("DOMContentLoaded", function () {
     textArea.name = `questions[${questionCounter}][description]`;
     textArea.placeholder = "Problem description";
 
-    const inputImgElement = document.createElement("input");
-    inputImgElement.type = "file";
-    inputImgElement.name = `questions[${questionCounter}][img]`;
-    inputImgElement.accept = "image/*";
-    inputImgElement.multiple = false;
-    inputImgElement.addEventListener("change", handleFileUpload);
-
-    function handleFileUpload(event) {
-      const file = event.target.files[0]; // Get the selected file
-      // Do something with the file (e.g., upload it to the server)
-      console.log("Selected file:", file);
-    }
-
     questionSet.appendChild(titleInput);
     questionSet.appendChild(document.createElement("br"));
     questionSet.appendChild(document.createElement("br"));
     questionSet.appendChild(textArea);
-    questionSet.appendChild(inputImgElement);
     questionSet.appendChild(document.createElement("br"));
     questionSet.appendChild(document.createElement("br"));
 
@@ -86,4 +72,5 @@ document.addEventListener("DOMContentLoaded", function () {
     const correctInput = optionDiv.querySelector(".option-correct-value");
     correctInput.value = isChecked ? 1 : 0;
   }
+
 });
