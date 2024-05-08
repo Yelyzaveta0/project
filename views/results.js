@@ -5,59 +5,33 @@ const getResultsTableHTML = (data) => {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="style.css" rel="stylesheet" type="text/css"/>
-    <title>Quiz Results</title>
+    <title>Quizz results</title>
   </head>
   <body>
     <table id="result-table">
-      <thead>
-        <tr>
-          <th>Student Name</th>
-          <th>Responses</th>
-        </tr>
-      </thead>
-      <tbody>`;
+    `;
 
-  let middleHTML = '';
+  const middleHTML = [];
 
   for (const key in data) {
-    const studentName = key;
-    const responses = data[key].responses.map(response => {
-      return `
-        <tr>
-          <td>${response.questionId}</td>
-          <td>${response.answeredOptionId}</td>
-          <td>${response.isCorrect ? 'Yes' : 'No'}</td>
-        </tr>`;
-    }).join('');
-    
-    middleHTML += `
-      <tr>
-        <td>${studentName}</td>
-        <td>
-          <table>
-            <thead>
-              <tr>
-                <th>Question ID</th>
-                <th>Answered Option ID</th>
-                <th>Correct</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${responses}
-            </tbody>
-          </table>
-        </td>
-      </tr>`;
+    const middleRow = [];
+    middleRow.push(`<tr scope="row"><td>${key}</td>`);
+    for (let i = 0; i < data[key].responses.length; i++) {
+      middleRow.push(
+        `<td>${i + 1}</td><td>${data[key].responses[i].answeredOptionId}</td><td>${data[key].responses[i].isCorrect}</td>`,
+      );
+    }
+    middleRow.push("</td>");
+    middleHTML.push(middleRow.join(""));
   }
 
   const bottomHTML = `
-      </tbody>
-    </table>
-    <script src="resultsTable.js"></script>
-  </body>
-</html>`;
+            </table>
+        <script src="resultsTable.js"></script>
+    </body>
+</html>;`;
 
-  return headHTML + middleHTML + bottomHTML;
+  return headHTML.concat(middleHTML.join(""), bottomHTML);
 };
 
 module.exports = {

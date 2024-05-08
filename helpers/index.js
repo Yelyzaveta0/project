@@ -36,8 +36,22 @@ const getGroupedData = (data) => {
     return acc;
   }, {});
 };
+
+const getGroupedData = (data) => {
+  return data.reduce((acc, obj) => {
+    const key = obj.studentName;
+    if (!acc[key]) {
+      acc[key] = {};
+      acc[key].responses = [];
+      acc[key].grade = undefined;
+    }
+    acc[key].responses.push(obj);
+    return acc;
+  }, {});
+};
 module.exports = {
   getRandomString,
   mapOptionsToQuestions,
+  getGroupedData,
   getGroupedData,
 };
